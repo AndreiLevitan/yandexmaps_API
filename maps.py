@@ -23,6 +23,14 @@ class GUI(QMainWindow, Ui_MainWindow):
         self.map_label.show()
         logging.info('Showed map image %r', map_image)
 
+    def keyPressEvent(self, event):
+        PGUP = 16777238
+        PGDN = 16777239
+        if event.key() == PGDN:
+            main.scale_down()
+        elif event.key() == PGUP:
+            main.scale_up()
+
 
 class Maps:
     def __init__(self):
@@ -30,6 +38,7 @@ class Maps:
         self.gui = GUI()
         self.coordinates = None  # (float, float)
         self.scale = None  # (float, float)
+        self.gui.show()
         logging.info('Initialized Maps')
 
     def set_coordinates(self, *args):  # установка координат
@@ -45,16 +54,36 @@ class Maps:
         logging.info('Get image %r', map_image)
         return map_image
 
-    def run(self):
-        logging.info('Run app...')
-        # start code
+    def scale_up(self):
+        self.scale = (min(max(self.scale[0] * 2, 0.15625), 80),
+                      min(max(self.scale[1] * 2, 0.15625), 80))
+        self.init_map()
+        logging.info('Set scale up to %r', self.scale)
 
+    def scale_down(self):
+        self.scale = (min(max(self.scale[0] / 2, 0.15625), 80),
+                      min(max(self.scale[1] / 2, 0.15625), 80))
+        self.init_map()
+        logging.info('Set scale down to %r', self.scale)
+
+    def init_map(self):
         map_image = self.get_map_image()
         self.gui.render_map(map_image)
 
+    def run(self):
+        logging.info('Run app...')
+
+        # start code
+
+        self.init_map()
+
         # end code
 
+
         self.gui.show()
+        self.terminate()
+
+    def terminate(self):
         logging.info('Run finished')
         sys.exit(self.app.exec_())
 
