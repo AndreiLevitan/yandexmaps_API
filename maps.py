@@ -26,10 +26,25 @@ class GUI(QMainWindow, Ui_MainWindow):
     def keyPressEvent(self, event):
         PGUP = 16777238  # константа клавиши PgUp
         PGDN = 16777239  # константа клавиши PgDn
-        if event.key() == PGDN:  # отлов ивентов клавиш
+
+        KEY_UP = 16777235
+        KEY_LEFT = 16777236
+        KEY_DOWN = 16777237
+        KEY_RIGHT = 16777234
+
+        key = event.key()
+        if key == PGDN:  # отлов ивентов клавиш
             main.scale_down()
-        elif event.key() == PGUP:
+        elif key == PGUP:
             main.scale_up()
+        elif key == KEY_UP:
+            main.move_up()
+        elif key == KEY_DOWN:
+            main.move_down()
+        elif key == KEY_LEFT:
+            main.move_left()
+        elif key == KEY_RIGHT:
+            main.move_right()
 
 
 class Maps:
@@ -53,6 +68,43 @@ class Maps:
         map_image = geo.get_map_image(self.coordinates, self.scale)
         logging.info('Get image %r', map_image)
         return map_image
+
+    def get_delta(self):
+        scale = self.scale[0]
+        delta = scale / 4
+        return delta
+
+    def move_up(self):
+        delta = self.get_delta()
+        max_value = 83 - delta * 2
+        self.coordinates = self.coordinates[0], min(self.coordinates[1] + delta, max_value)
+        self.init_map()  # реинициализация карты
+        logging.info('Move coordinates up')
+
+    def move_down(self):
+        delta = self.get_delta()
+        min_value = -83 + delta * 2
+        self.coordinates = self.coordinates[0], max(self.coordinates[1] - delta, min_value)
+        self.init_map()  # реинициализация карты
+        logging.info('Move coordinates down')
+
+    def move_left(self):
+        delta = self.get_delta()
+        new_coordinates = self.coordinates[0] + delta
+        if new_coordinates > 180:
+            new_coordinates -= 360
+        self.coordinates = new_coordinates, self.coordinates[1]
+        self.init_map()  # реинициализация карты
+        logging.info('Move coordinates left')
+
+    def move_right(self):
+        delta = self.get_delta()
+        new_coordinates = self.coordinates[0] + delta
+        if new_coordinates < -180:
+            new_coordinates += 360
+        self.coordinates = new_coordinates, self.coordinates[1]
+        self.init_map()  # реинициализация карты
+        logging.info('Move coordinates right')
 
     def scale_up(self):
         self.scale = (min(max(self.scale[0] * 2, 0.15625), 80),  # значение между scale 0.15625 и 80
