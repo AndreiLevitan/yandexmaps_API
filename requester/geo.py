@@ -1,5 +1,7 @@
 import requests
 import sys
+import logging
+
 from math import sin, cos, sqrt, atan2, radians
 from tips import all_to_str
 
@@ -25,7 +27,6 @@ def get_map_image(coordinates, scale):
     }
 
     response = requests.get(map_api_server, params=params)
-    print(response)
     map_file = 'temp/map.png'
     try:
         with open('data/' + map_file, "wb") as file:
@@ -33,7 +34,6 @@ def get_map_image(coordinates, scale):
     except IOError as ex:
         print("Ошибка записи временного файла:", ex)
         sys.exit(2)
-    print('Got map')
     return map_file
 
 def get_spn(point):
