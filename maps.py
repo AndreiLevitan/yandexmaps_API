@@ -27,10 +27,10 @@ class GUI(QMainWindow, Ui_MainWindow):
         PGUP = 16777238  # константа клавиши PgUp
         PGDN = 16777239  # константа клавиши PgDn
 
-        KEY_UP = 16777235
-        KEY_LEFT = 16777236
-        KEY_DOWN = 16777237
-        KEY_RIGHT = 16777234
+        KEY_UP = 16777235  # константа клавиши Up
+        KEY_LEFT = 16777236  # константа клавиши Left
+        KEY_DOWN = 16777237  # константа клавиши Down
+        KEY_RIGHT = 16777234  # константа клавиши Right
 
         key = event.key()
         if key == PGDN:  # отлов ивентов клавиш
@@ -83,15 +83,15 @@ class Maps:
 
     def move_down(self):
         delta = self.get_delta()
-        min_value = -83 + delta * 2
+        min_value = -83 + delta * 2  # установление минимального значения y
         self.coordinates = self.coordinates[0], max(self.coordinates[1] - delta, min_value)
         self.init_map()  # реинициализация карты
         logging.info('Move coordinates down')
 
     def move_left(self):
         delta = self.get_delta()
-        new_coordinates = self.coordinates[0] + delta
-        if new_coordinates > 180:
+        new_coordinates = self.coordinates[0] + delta  # установление максимального значения y
+        if new_coordinates > 180:  # обновляет значение при превышении лимита
             new_coordinates -= 360
         self.coordinates = new_coordinates, self.coordinates[1]
         self.init_map()  # реинициализация карты
@@ -100,7 +100,7 @@ class Maps:
     def move_right(self):
         delta = self.get_delta()
         new_coordinates = self.coordinates[0] + delta
-        if new_coordinates < -180:
+        if new_coordinates < -180:  # обновляет значение при превышении лимита
             new_coordinates += 360
         self.coordinates = new_coordinates, self.coordinates[1]
         self.init_map()  # реинициализация карты
