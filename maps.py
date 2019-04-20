@@ -24,9 +24,9 @@ class GUI(QMainWindow, Ui_MainWindow):
         logging.info('Showed map image %r', map_image)
 
     def keyPressEvent(self, event):
-        PGUP = 16777238
-        PGDN = 16777239
-        if event.key() == PGDN:
+        PGUP = 16777238  # константа клавиши PgUp
+        PGDN = 16777239  # константа клавиши PgDn
+        if event.key() == PGDN:  # отлов ивентов клавиш
             main.scale_down()
         elif event.key() == PGUP:
             main.scale_up()
@@ -55,18 +55,18 @@ class Maps:
         return map_image
 
     def scale_up(self):
-        self.scale = (min(max(self.scale[0] * 2, 0.15625), 80),
+        self.scale = (min(max(self.scale[0] * 2, 0.15625), 80),  # значение между scale 0.15625 и 80
                       min(max(self.scale[1] * 2, 0.15625), 80))
-        self.init_map()
+        self.init_map()  # реинициализация карты
         logging.info('Set scale up to %r', self.scale)
 
     def scale_down(self):
-        self.scale = (min(max(self.scale[0] / 2, 0.15625), 80),
+        self.scale = (min(max(self.scale[0] / 2, 0.15625), 80),  # значение между scale 0.15625 и 80
                       min(max(self.scale[1] / 2, 0.15625), 80))
-        self.init_map()
+        self.init_map()  # реинициализация карты
         logging.info('Set scale down to %r', self.scale)
 
-    def init_map(self):
+    def init_map(self):  # инициализация и отображение карты
         map_image = self.get_map_image()
         self.gui.render_map(map_image)
 
