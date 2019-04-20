@@ -3,6 +3,9 @@ from PyQt5.QtGui import QPixmap
 from maps_gui import Ui_MainWindow
 from requester import geo
 
+from tips import fetch_to_tuple
+
+
 import sys
 
 
@@ -26,27 +29,12 @@ class Maps:
         self.scale = None  # (float, float)
 
     def set_coordinates(self, *args):  # установка координат
-        self.coordinates = self.fetch_to_tuple(args)
+        self.coordinates = fetch_to_tuple(args)
 
     def set_scale(self, *args):  # установка масштаба
-        self.scale = self.fetch_to_tuple(args)
+        self.scale = fetch_to_tuple(args)
 
-    def fetch_to_tuple(self, *args):  # привождение любого ввода к виду (float, float)
-        case = args[0]
-        if len(case) == 2:
-            if isinstance(case, str):
-                case = [float(i) for i in case.split()]
-        elif len(case) == 1:
-            case = case[0]
-            if isinstance(case, list):
-                case = tuple(case)
-            elif isinstance(case, tuple):
-                pass
-        if isinstance(case, tuple):
-            return case
 
-        print('Incorrect fetch input: {}'.format(case))
-        return None
 
     def get_map_image(self):
         map_image = geo.get_map_image(self.coordinates, self.scale)

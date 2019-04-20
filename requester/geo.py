@@ -1,7 +1,7 @@
 import requests
 import sys
 from math import sin, cos, sqrt, atan2, radians
-from requester.tips import all_to_str
+from tips import all_to_str
 
 
 def get_toponym(point):
