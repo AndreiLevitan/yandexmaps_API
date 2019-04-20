@@ -1,37 +1,72 @@
 import requests
+import sys
 from math import sin, cos, sqrt, atan2, radians
+from requester.tips import all_to_str
 
 
-def get_coordinates(city):
-
-    url = "https://geocode-maps.yandex.ru/1.x/"
-
-    params = {
-        'geocode': city,
-        'format': 'json'
-    }
-
-    response = requests.get(url, params)
-    json = response.json()
-    point_str = json['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']
-    point_array = [float(x) for x in point_str.split(' ')]
-
-    return point_array
+def get_toponym(point):
+    geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
+    geocoder_params = {"geocode": point, "format": "json"}
+    response = requests.get(geocoder_api_server, params=geocoder_params)
+    if not response:
+        pass
+    json_response = response.json()
+    toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+    return toponym
 
 
-def get_country(city):
-
-    url = "https://geocode-maps.yandex.ru/1.x/"
+def get_map_image(coordinates, scale):
+    map_api_server = "http://static-maps.yandex.ru/1.x/"
 
     params = {
-        'geocode': city,
-        'format': 'json'
+        'l': 'map',
+        'll': ','.join(all_to_str(coordinates)),
+        'spn': ','.join(all_to_str(scale))
     }
 
-    response = requests.get(url, params)
-    json = response.json()
+    response = requests.get(map_api_server, params=params)
+    print(response)
+    map_file = 'temp/map.png'
+    try:
+        with open('data/' + map_file, "wb") as file:
+            file.write(response.content)
+    except IOError as ex:
+        print("Ошибка записи временного файла:", ex)
+        sys.exit(2)
+    print('Got map')
+    return map_file
 
-    return json['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['AddressDetails']['Country']['CountryName']
+def get_spn(point):
+    toponym = get_toponym(point)
+
+    lower_corner = toponym['boundedBy']['Envelope']['lowerCorner']
+    upper_corner = toponym['boundedBy']['Envelope']['upperCorner']
+
+    lower_corner = [float(i) for i in lower_corner.split()]
+    upper_corner = [float(i) for i in upper_corner.split()]
+
+    delta_x = upper_corner[0] - lower_corner[0]
+    delta_y = upper_corner[1] - lower_corner[1]
+
+    return delta_x, delta_y
+
+
+def get_coordinates(point):
+    toponym = get_toponym(point)
+
+    toponym_coodrinates = toponym["Point"]["pos"]
+    toponym_longitude, toponym_lattitude = [float(i) for i in toponym_coodrinates.split(" ")]
+
+    return toponym_longitude, toponym_lattitude
+
+
+def get_map_response(params):
+    map_api_server = "http://static-maps.yandex.ru/1.x/"
+    response = requests.get(map_api_server, params=params)
+    if not response:
+        print('No map response')
+        return None
+    return response
 
 
 def get_distance(p1, p2):
