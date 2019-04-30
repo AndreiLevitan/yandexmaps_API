@@ -16,12 +16,24 @@ class GUI(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.map_image = None
         logging.info('Initialized GUI')
+        self.sat_btn.clicked.connect(self.set_sat)
+        self.map_btn.clicked.connect(self.set_map)
+        self.hyb_btn.clicked.connect(self.set_hyb)
 
     def render_map(self, map_image):
         image_pixmap = QPixmap('data/' + map_image)
         self.map_label.setPixmap(image_pixmap)
         self.map_label.show()
         logging.info('Showed map image %r', map_image)
+
+    def set_sat(self):
+        main.set_l('sat')
+
+    def set_map(self):
+        main.set_l('map')
+
+    def set_hyb(self):
+        main.set_l('sat,skl')
 
     def keyPressEvent(self, event):
         PGUP = 16777238  # константа клавиши PgUp
@@ -54,7 +66,12 @@ class Maps:
         self.coordinates = None  # (float, float)
         self.scale = None  # (float, float)
         self.gui.show()
+        self.l = 'map'
         logging.info('Initialized Maps')
+
+    def set_l(self, l):
+        self.l = l
+        self.init_map()
 
     def set_coordinates(self, *args):  # установка координат
         self.coordinates = fetch_to_tuple(args)
@@ -65,7 +82,7 @@ class Maps:
         logging.info('Set scale to %r', self.scale)
 
     def get_map_image(self):
-        map_image = geo.get_map_image(self.coordinates, self.scale)
+        map_image = geo.get_map_image(self.coordinates, self.scale, self.l)
         logging.info('Get image %r', map_image)
         return map_image
 

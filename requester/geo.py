@@ -17,17 +17,20 @@ def get_toponym(point):
     return toponym
 
 
-def get_map_image(coordinates, scale):
+def get_map_image(coordinates, scale, l):
     map_api_server = "http://static-maps.yandex.ru/1.x/"
 
     params = {
-        'l': 'map',
+        'l': l,
         'll': ','.join(all_to_str(coordinates)),
         'spn': ','.join(all_to_str(scale))
     }
 
     response = requests.get(map_api_server, params=params)
-    map_file = 'temp/map.png'
+    img_type = '.png'
+    if l[:3] == 'sat':
+        img_type = '.jpg'
+    map_file = 'temp/map{}'.format(img_type)
     try:
         with open('data/' + map_file, "wb") as file:
             file.write(response.content)

@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>30</y>
+      <y>50</y>
       <width>581</width>
-      <height>431</height>
+      <height>411</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -36,15 +36,48 @@
      <property name="geometry">
       <rect>
        <x>6</x>
-       <y>2</y>
+       <y>22</y>
        <width>571</width>
-       <height>421</height>
+       <height>401</height>
       </rect>
      </property>
      <property name="text">
       <string/>
      </property>
     </widget>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>10</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="sat_btn">
+       <property name="text">
+        <string>SAT</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="map_btn">
+       <property name="text">
+        <string>MAP</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="hyb_btn">
+       <property name="text">
+        <string>HYB</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
